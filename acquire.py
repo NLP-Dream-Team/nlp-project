@@ -15,6 +15,7 @@ import json
 from typing import Dict, List, Optional, Union, cast
 import requests
 from env import github_token, github_username
+import pandas as pd
 
 # TODO: Make a github personal access token.
 #     1. Go here and generate a personal access token https://github.com/settings/tokens
@@ -339,3 +340,11 @@ def scrape_github_data() -> List[Dict[str, str]]:
 if __name__ == "__main__":
     data = scrape_github_data()
     json.dump(data, open("data.json", "w"), indent=1)
+
+
+def get_df():
+    '''
+    Reads JSON into dataframe
+    '''
+    df = pd.read_json('data.json')
+    return df
