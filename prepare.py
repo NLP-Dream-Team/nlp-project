@@ -9,8 +9,8 @@ def basic_clean(s):
     Takes a string and returns a normalized lowercase string 
     with special characters removed
     '''
-    #
-    s = s.lower()
+    # lowercase
+    s = str(s.lower())
     # normalize
     s = unicodedata.normalize('NFKD', s)\
     .encode('ascii', 'ignore')\
@@ -84,7 +84,7 @@ def remove_stopwords(s, extra_words = [], exclude_words = []):
     # return list with removed stopwords
     return s_without_stopwords
 
-def prep_article_data(df, column, extra_words=[], exclude_words=[]):
+def prep_string_data(df, column, extra_words=[], exclude_words=[]):
     '''
     Takes in a dataframe, original string column, with optional lists of words to
     add to and remove from the stopword_list. Returns a dataframe with the title,
@@ -98,3 +98,20 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
 
     
     return df[['title', column,'clean', 'stemmed', 'lemmatized']]
+
+def prep_repo_data(df):
+    '''
+    Takes in a dataframe and returns a prepared dataframe.
+    '''
+    # create column with full link to github repo
+    df['link'] = 'https://github.com/' + df.repo
+    # create cleaned version of readme
+    df['clean'] = [tokenize(basic_clean(readme)) for readme in df.readme_contents]
+    # remove \n from cleaned readme
+    df['clean'] = [re.sub('[\n]','', readme) for readme in df.clean]
+    # stem readme
+    df['stemmed'] = [remove_stopwords(stem(readme)) for readme in df.clean]
+    # lemmatize readme
+    df['lemmatized'] = [remove_stopwords(lemmatize(readme)) for readme in df.clean]
+    # return prepared dataframe
+    return df
