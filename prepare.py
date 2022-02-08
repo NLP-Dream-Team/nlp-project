@@ -3,6 +3,10 @@ import re
 import nltk
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+
 
 def basic_clean(s):
     '''
@@ -113,5 +117,25 @@ def prep_repo_data(df):
     df['stemmed'] = [remove_stopwords(stem(readme)) for readme in df.clean]
     # lemmatize readme
     df['lemmatized'] = [remove_stopwords(lemmatize(readme)) for readme in df.clean]
+    
+    # gathering languages with >= 11 repos
+    languages = df.language.value_counts()[df.language.value_counts() >= 11].index.to_list()
+    df = df[df.language.isin(languages)]
+    
+    # drop duplicates
+    df.drop_duplicates(inplace=True)
+    
     # return prepared dataframe
+    df.dropna(inplace=True)
     return df
+
+def split_data(df):
+    '''
+    Takes in a dataframe and returns train, validate, test subset dataframes. 
+    '''
+    tfidf = TfidfVectorizer()
+    X = tfidf.fit_transform(df.lemmatized)
+    y = df.language
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = .2, stratify = y, random_state = 222)
+    X_train, X_validate, y_train, y_validate = train_test_split(X_train,y_train, test_size = .3, stratify = y_train, random_state = 222)
+    return X, X_train, X_validate, X_test, y_train,y_validate, y_test
