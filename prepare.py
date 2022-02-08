@@ -105,7 +105,7 @@ def prep_string_data(df, column, extra_words=[], exclude_words=[]):
 
 def prep_repo_data(df):
     '''
-    Takes in a dataframe and returns a prepared dataframe.
+    The ultimate dishwasher.
     '''
     # create column with full link to github repo
     df['link'] = 'https://github.com/' + df.repo
@@ -114,9 +114,9 @@ def prep_repo_data(df):
     # remove \n from cleaned readme
     df['clean'] = [re.sub('[\n]','', readme) for readme in df.clean]
     # stem readme
-    df['stemmed'] = [remove_stopwords(stem(readme)) for readme in df.clean]
+    df['stemmed'] = [remove_stopwords(stem(readme), extra_words = ["'"]) for readme in df.clean]
     # lemmatize readme
-    df['lemmatized'] = [remove_stopwords(lemmatize(readme)) for readme in df.clean]
+    df['lemmatized'] = [remove_stopwords(lemmatize(readme), extra_words = ["'"]) for readme in df.clean]
     
     # gathering languages with >= 11 repos
     languages = df.language.value_counts()[df.language.value_counts() >= 11].index.to_list()
