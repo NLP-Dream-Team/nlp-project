@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 
 import varname
-import nltk
+import nltk.sentiment
 
 from scipy import stats
 
@@ -79,12 +79,13 @@ def explore(df, train, validate, test):
     test['word_count'] = test.lemmatized.apply(basic_clean).apply(str.split).apply(len)
 
 
-    #### Sentiment
-    # sia = nltk.sentiment.SentimentIntensityAnalyzer()
-    # sia.polarity_scores(all_words)
-    # train['sentiment'] = train.lemmatized.apply(lambda doc: sia.polarity_scores(doc)['compound'])
-    # validate['sentiment'] = validate.lemmatized.apply(lambda doc: sia.polarity_scores(doc)['compound'])
-    # test['sentiment'] = test.lemmatized.apply(lambda doc: sia.polarity_scores(doc)['compound'])
+    ### Sentiment
+    all_words = basic_clean(' '.join(train.lemmatized))
+    sia = nltk.sentiment.SentimentIntensityAnalyzer()
+    sia.polarity_scores(all_words)
+    train['sentiment'] = train.lemmatized.apply(lambda doc: sia.polarity_scores(doc)['compound'])
+    validate['sentiment'] = validate.lemmatized.apply(lambda doc: sia.polarity_scores(doc)['compound'])
+    test['sentiment'] = test.lemmatized.apply(lambda doc: sia.polarity_scores(doc)['compound'])
 
 
     ##### TF-IDF
@@ -152,3 +153,87 @@ def get_idf_dist(train):
     dist_loop = word_counts.sort_values('all', ascending = False).head(20).index.to_list()
     return dist_loop
 
+
+def run_kruskal_wallis(train):
+    '''
+    This function runs a Kruskal-Wallis statistical test to determine if there is
+    significant variation in the length of the README files based on what language
+    the repository primarily contains.
+    H_0: Average message length for languages is about the same.
+    H_a: Average message length between languages is significantly different.
+    '''
+    # assign variables to respective data
+    c_sharp = train[train.coding_language == 'C#']
+    c = train[train.coding_language == 'C']
+    c_plus_plus = train[train.coding_language == 'C++']
+    html = train[train.coding_language == 'HTML']
+    java = train[train.coding_language == 'Java']
+    java_script = train[train.coding_language == 'JavaScript']
+    lua = train[train.coding_language == 'Lua']
+    php = train[train.coding_language == 'PHP']
+    python = train[train.coding_language == 'Python']
+    ruby = train[train.coding_language == 'Ruby']
+    source_pawn = train[train.coding_language == 'SourcePawn']
+    # set alpha
+    alpha = 0.1
+    # run kruskal-wallis test
+    k_stat, p = stats.kruskal(c_sharp.message_length,
+                              c.message_length,
+                              c_plus_plus.message_length,
+                              html.message_length,
+                              java.message_length,
+                              java_script.message_length,
+                              lua.message_length,
+                              php.message_length,
+                              python.message_length,
+                              ruby.message_length, 
+                              source_pawn.message_length
+                             )
+    print(k_stat, p)
+    # return result of test
+    if p > alpha:
+        return 'We fail to reject the null hypothesis.'
+    else:
+        return 'Reject the null hypothesis.'
+
+def run_kruskal_wallis_sentiment(train):
+    '''
+    This function runs a Kruskal-Wallis statistical test to determine if there is
+    significant variation in the sentiment of the README files based on what language
+    the repository primarily contains.
+    H_0: Average sentiment for languages is about the same.
+    H_a: Average sentiment between languages is significantly different.
+    '''
+    # assign variables to respective data
+    c_sharp = train[train.coding_language == 'C#']
+    c = train[train.coding_language == 'C']
+    c_plus_plus = train[train.coding_language == 'C++']
+    html = train[train.coding_language == 'HTML']
+    java = train[train.coding_language == 'Java']
+    java_script = train[train.coding_language == 'JavaScript']
+    lua = train[train.coding_language == 'Lua']
+    php = train[train.coding_language == 'PHP']
+    python = train[train.coding_language == 'Python']
+    ruby = train[train.coding_language == 'Ruby']
+    source_pawn = train[train.coding_language == 'SourcePawn']
+    # set alpha
+    alpha = 0.1
+    # run kruskal-wallis test
+    k_stat, p = stats.kruskal(c_sharp.sentiment,
+                              c.sentiment,
+                              c_plus_plus.sentiment,
+                              html.sentiment,
+                              java.sentiment,
+                              java_script.sentiment,
+                              lua.sentiment,
+                              php.sentiment,
+                              python.sentiment,
+                              ruby.sentiment, 
+                              source_pawn.sentiment
+                             )
+    print(k_stat, p)
+    # return result of test
+    if p > alpha:
+        return 'We fail to reject the null hypothesis.'
+    else:
+        return 'Reject the null hypothesis.'
