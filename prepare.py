@@ -108,15 +108,16 @@ def prep_repo_data(df):
     The ultimate dishwasher.
     '''
     # create column with full link to github repo
+    coding_languages = ['javascript','c_sharp','php','c','sourcepawn','html','c_plus_plus','java','python','lua','ruby']
     df['link'] = 'https://github.com/' + df.repo
     # create cleaned version of readme
     df['clean'] = [tokenize(basic_clean(readme)) for readme in df.readme_contents]
     # remove \n from cleaned readme
     df['clean'] = [re.sub('[\n]','', readme) for readme in df.clean]
     # stem readme
-    df['stemmed'] = [remove_stopwords(stem(readme), extra_words = ["'"]) for readme in df.clean]
+    df['stemmed'] = [remove_stopwords(stem(readme), extra_words = coding_languages) for readme in df.clean]
     # lemmatize readme
-    df['lemmatized'] = [remove_stopwords(lemmatize(readme), extra_words = ["'"]) for readme in df.clean]
+    df['lemmatized'] = [remove_stopwords(lemmatize(readme), extra_words = coding_languages) for readme in df.clean]
     
     # gathering languages with >= 11 repos
     languages = df.language.value_counts()[df.language.value_counts() >= 11].index.to_list()
