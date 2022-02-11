@@ -153,7 +153,80 @@ def get_idf_dist(train):
     dist_loop = word_counts.sort_values('all', ascending = False).head(20).index.to_list()
     return dist_loop
 
+# suggest add function to explore.py
+def distributions_grid(df, quant_vars):
 
+    '''
+    This function creates a nice sized figure, enumerates the list of features passed into the function, creates a grid of subplots, and then charts histograms for features in the list onto the subplots.
+    '''
+
+    plt.figure(figsize = (13, 8), edgecolor = 'darkslategrey')   # create figure
+    for i, cat in enumerate(quant_vars[:6]):    # loop through enumerated list
+        plot_number = i + 1     # i starts at 0, but plot nos should start at 1
+        plt.subplot(2, 3, plot_number)    # create subplot
+        plt.title(cat)    # title 
+        plt.ylabel('Count')    # set y-axis label
+        plt.xlabel('Inverse Document Frequency')    # set x-axis label
+        df[cat].hist(color = 'teal', edgecolor = 'plum')   # display histogram for column
+        plt.grid(False)    # rid grid-lines
+        plt.tight_layout();    # clean
+
+
+        
+def bar_messages(df):
+    
+    '''
+    This function sets default figure and font sizes, groups the data by languages, and makes a dataframe
+    out of the average message lengths. It then plots a bar chart using pandas to show average message length
+    for each language.
+    '''
+    
+    
+    plt.rc('font', size = 15)    # set default text size
+    plt.rc('figure', figsize = (13, 8))    # set default figure size
+
+    # assign variables to respective data
+    c_sharp = df[df.coding_language == 'C#']
+    c = df[df.coding_language == 'C']
+    c_plus_plus = df[df.coding_language == 'C++']
+    html = df[df.coding_language == 'HTML']
+    java = df[df.coding_language == 'Java']
+    java_script = df[df.coding_language == 'JavaScript']
+    lua = df[df.coding_language == 'Lua']
+    php = df[df.coding_language == 'PHP']
+    python = df[df.coding_language == 'Python']
+    ruby = df[df.coding_language == 'Ruby']
+    source_pawn = df[df.coding_language == 'SourcePawn']
+
+    # list coding languages
+    programs = list(df.coding_language.unique())
+    # sort languages
+    programs.sort()
+    
+    # assign dataframe to list of average message lengths
+    unread_messages = pd.DataFrame([c.message_length.mean(),
+                                    c_sharp.message_length.mean(),
+                                    c_plus_plus.message_length.mean(),
+                                    html.message_length.mean(),
+                                    java.message_length.mean(),
+                                    java_script.message_length.mean(),
+                                    lua.message_length.mean(),
+                                    php.message_length.mean(),
+                                    python.message_length.mean(),
+                                    ruby.message_length.mean(),
+                                    source_pawn.message_length.mean()
+                                   ], index = programs
+                                  )
+
+    unread_messages.columns = {'avg_message_length'}    # re-define column
+
+    # plot bar chart of average message lengths
+    unread_messages.plot.barh(color = 'darkmagenta', edgecolor = 'paleturquoise')
+    plt.title('Average Message Length by Coding Language', size = 18)    # set title
+    plt.xlabel('Character Count', size = 15)    # set x-axis label
+    plt.ylabel('Language', size = 15);    # set y-axis label
+    
+        
 def run_kruskal_wallis(train):
     '''
     This function runs a Kruskal-Wallis statistical test to determine if there is
