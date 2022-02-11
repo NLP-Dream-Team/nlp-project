@@ -237,3 +237,120 @@ def run_kruskal_wallis_sentiment(train):
         return 'We fail to reject the null hypothesis.'
     else:
         return 'Reject the null hypothesis.'
+
+def sentiment_viz(train):
+    '''
+    This function returns a series of plots showing the distribution of sentiment scores by
+    coding language.
+    '''
+    # assign variables to respective data
+    c_sharp = train[train.coding_language == 'C#']
+    c = train[train.coding_language == 'C']
+    c_plus_plus = train[train.coding_language == 'C++']
+    html = train[train.coding_language == 'HTML']
+    java = train[train.coding_language == 'Java']
+    java_script = train[train.coding_language == 'JavaScript']
+    lua = train[train.coding_language == 'Lua']
+    php = train[train.coding_language == 'PHP']
+    python = train[train.coding_language == 'Python']
+    ruby = train[train.coding_language == 'Ruby']
+    source_pawn = train[train.coding_language == 'SourcePawn']
+    # create psuedo list
+    languages = [c_sharp, c , c_plus_plus, html, java, java_script, lua, php, python, ruby, source_pawn]
+    for language in languages:
+        plt.figure(figsize = (7, 4))    # create figure
+        language['sentiment'].hist(color = 'indigo', bins = 20)    # plot histogram of feature
+        plt.tight_layout()    # clear it up
+        plt.xticks(rotation = 45, size = 11)    # rotate x-axis label ticks 45 degrees, increase size to 11
+        plt.yticks(size = 13)    # increasee y-axis label ticks to size 13
+        plt.xlabel('Sentiment Score')
+        plt.ylabel('# of Occurrences')
+        plt.grid(False)
+        plt.title(f'Distribution of {language.coding_language.min()} Sentiment', size = 13)    # title
+    return plt.show();
+
+def unique_word_viz(train):
+    '''
+    This function returns a visualization of the Number of Words Unique to Each Language
+    From Each Language's 20 most frequently occurring words.
+    '''
+    from prepare import basic_clean
+    # create word strings
+    javascript_words = basic_clean(' '.join(train[train.coding_language == 'JavaScript'].lemmatized))
+    c_sharp_words = basic_clean(' '.join(train[train.coding_language == 'C#'].lemmatized))
+    php_words = basic_clean(' '.join(train[train.coding_language == 'PHP'].lemmatized))
+    c_words = basic_clean(' '.join(train[train.coding_language == 'C'].lemmatized))
+    sourcepawn_words = basic_clean(' '.join(train[train.coding_language == 'SourcePawn'].lemmatized))
+    html_words = basic_clean(' '.join(train[train.coding_language == 'HTML'].lemmatized))
+    c_plus_plus_words = basic_clean(' '.join(train[train.coding_language == 'C++'].lemmatized))
+    java_words = basic_clean(' '.join(train[train.coding_language == 'Java'].lemmatized))
+    python_words = basic_clean(' '.join(train[train.coding_language == 'Python'].lemmatized))
+    lua_words = basic_clean(' '.join(train[train.coding_language == 'Lua'].lemmatized))
+    ruby_words = basic_clean(' '.join(train[train.coding_language == 'Ruby'].lemmatized))
+    all_words = basic_clean(' '.join(train.lemmatized))
+    # create series of word frequencies per language
+    javascript_freq = pd.Series(javascript_words.split()).value_counts()
+    c_sharp_freq = pd.Series(c_sharp_words.split()).value_counts()
+    php_freq = pd.Series(php_words.split()).value_counts()
+    c_freq = pd.Series(c_words.split()).value_counts()
+    sourcepawn_freq = pd.Series(sourcepawn_words.split()).value_counts()
+    html_freq = pd.Series(html_words.split()).value_counts()
+    c_plus_plus_freq =pd.Series(c_plus_plus_words.split()).value_counts() 
+    java_freq = pd.Series(java_words.split()).value_counts()
+    python_freq = pd.Series(python_words.split()).value_counts()
+    lua_freq = pd.Series(lua_words.split()).value_counts()
+    ruby_freq = pd.Series(ruby_words.split()).value_counts()
+    # all languages word frequency
+    all_freq = pd.Series(all_words.split()).value_counts()
+    word_counts = pd.concat([javascript_freq, c_sharp_freq, php_freq, c_freq, sourcepawn_freq, html_freq, c_plus_plus_freq, java_freq, python_freq, lua_freq, ruby_freq, all_freq], axis=1).fillna(0).astype(int)
+    word_counts.columns = ['javascript', 'c_sharp', 'php','c','sourcepawn','html','c_plus_plus','java','python','lua','ruby','all']
+    # create dataframes of each language's top 20 words
+    javascript_top = pd.DataFrame(word_counts.sort_values('javascript', ascending = False).head(20))
+    js_solo = javascript_top[(javascript_top.javascript == javascript_top['all'])]
+    csharp_top = pd.DataFrame(word_counts.sort_values('c_sharp', ascending = False).head(20))
+    cs_solo = csharp_top[(csharp_top.c_sharp == csharp_top['all'])]
+    php_top = pd.DataFrame(word_counts.sort_values('php', ascending = False).head(20))
+    php_solo = php_top[(php_top.php == php_top['all'])]
+    c_top = pd.DataFrame(word_counts.sort_values('c', ascending = False).head(20))
+    c_solo = c_top[(c_top.c == c_top['all'])]
+    sourcepawn_top = pd.DataFrame(word_counts.sort_values('sourcepawn', ascending = False).head(20))
+    sp_solo = sourcepawn_top[(sourcepawn_top.sourcepawn == sourcepawn_top['all'])]
+    html_top = pd.DataFrame(word_counts.sort_values('html', ascending = False).head(20))
+    html_solo = html_top[(html_top.html == html_top['all'])]
+    c_plus_plus_top = pd.DataFrame(word_counts.sort_values('c_plus_plus', ascending = False).head(20))
+    cp_solo = c_plus_plus_top[(c_plus_plus_top.c_plus_plus == c_plus_plus_top['all'])]
+    java_top = pd.DataFrame(word_counts.sort_values('java', ascending = False).head(20))
+    j_solo = java_top[(java_top.java == java_top['all'])]
+    python_top = pd.DataFrame(word_counts.sort_values('python', ascending = False).head(20))
+    py_solo = python_top[(python_top.python == python_top['all'])]
+    lua_top = pd.DataFrame(word_counts.sort_values('lua', ascending = False).head(20))
+    l_solo = lua_top[(lua_top.lua == lua_top['all'])]
+    ruby_top = pd.DataFrame(word_counts.sort_values('ruby', ascending = False).head(20))
+    r_solo = ruby_top[(ruby_top.ruby == ruby_top['all'])]
+    # combine dataframes
+    unique_words = pd.concat([js_solo, cs_solo, php_solo, c_solo, sp_solo, html_solo, cp_solo, j_solo, py_solo, l_solo, r_solo])
+    # convert to binary
+    unique_words[unique_words > 0] = 1
+    # plot
+    unique_words.drop(columns='all').sum().plot.bar().set(title='Number of Words Unique to Each Language\nFrom Each Language\'s Top 20 Words', xlabel='Language', ylabel='# of Words')
+    plt.xticks(rotation=45)
+    return plt.show();
+
+# suggest add function to explore.py
+def distributions_grid(df, quant_vars):
+
+    '''
+    This function creates a nice sized figure, enumerates the list of features passed into the function, creates a grid of subplots,
+    and then charts histograms for features in the list onto the subplots.
+    '''
+
+    plt.figure(figsize = (13, 8), edgecolor = 'darkslategrey')   # create figure
+    for i, cat in enumerate(quant_vars[:6]):    # loop through enumerated list
+        plot_number = i + 1     # i starts at 0, but plot nos should start at 1
+        plt.subplot(2, 3, plot_number)    # create subplot
+        plt.title(cat)    # title 
+        plt.ylabel('Count')    # set y-axis label
+        plt.xlabel('Inverse Document Frequency')    # set x-axis label
+        df[cat].hist(color = 'teal', edgecolor = 'plum')   # display histogram for column
+        plt.grid(False)    # rid grid-lines
+        plt.tight_layout();    # clean
