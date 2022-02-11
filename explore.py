@@ -116,7 +116,6 @@ def explore(df, train, validate, test):
     test = pd.merge(test,tfidf_df,how='left',right_index=True, left_index=True).fillna(0.0).rename(columns={'language_x':'coding_language', 'clean_x':'cleaned_readme', 'link_x':'repo_link'})
     return df, train, validate, test
 
-
 def get_idf_dist(train):
     # create word strings
     javascript_words = basic_clean(' '.join(train[train.coding_language == 'JavaScript'].lemmatized))
@@ -153,7 +152,6 @@ def get_idf_dist(train):
     dist_loop = word_counts.sort_values('all', ascending = False).head(20).index.to_list()
     return dist_loop
 
-
 def distributions_grid(df, quant_vars):
 
     '''
@@ -170,8 +168,7 @@ def distributions_grid(df, quant_vars):
         df[cat].hist(color = 'teal', edgecolor = 'plum')   # display histogram for column
         plt.grid(False)    # rid grid-lines
         plt.tight_layout();    # clean
-     
-
+    
 def bar_messages(df):
     
     '''
@@ -223,8 +220,7 @@ def bar_messages(df):
     plt.title('Average Message Length by Coding Language', size = 18)    # set title
     plt.xlabel('Character Count', size = 15)    # set x-axis label
     plt.ylabel('Language', size = 15);    # set y-axis label
-
-        
+     
 def run_kruskal_wallis(train):
     '''
     This function runs a Kruskal-Wallis statistical test to determine if there is
@@ -266,7 +262,6 @@ def run_kruskal_wallis(train):
         return 'We fail to reject the null hypothesis.'
     else:
         return 'Reject the null hypothesis.'
-
 
 def run_kruskal_wallis_sentiment(train):
     '''
@@ -310,7 +305,6 @@ def run_kruskal_wallis_sentiment(train):
     else:
         return 'Reject the null hypothesis.'
 
-
 def sentiment_viz(train):
     '''
     This function returns a series of plots showing the distribution of sentiment scores by
@@ -328,20 +322,22 @@ def sentiment_viz(train):
     python = train[train.coding_language == 'Python']
     ruby = train[train.coding_language == 'Ruby']
     source_pawn = train[train.coding_language == 'SourcePawn']
-    # create psuedo list
+    # create list
     languages = [c_sharp, c , c_plus_plus, html, java, java_script, lua, php, python, ruby, source_pawn]
-    for language in languages:
-        plt.figure(figsize = (7, 4))    # create figure
-        language['sentiment'].hist(color = 'indigo', bins = 20)    # plot histogram of feature
+    # create figure
+    plt.figure(figsize = (20, 11), edgecolor = 'darkslategrey')
+    for i, language in enumerate(languages):    # loop through enumerated list
+        plot_number = i + 1     # assign variable to increasing plot number
+        plt.subplot(3, 4, plot_number)    # create subplot
+        language['sentiment'].hist(color = 'indigo', edgecolor = 'black', bins = 20)    # plot histogram of feature
         plt.tight_layout()    # clear it up
         plt.xticks(rotation = 45, size = 11)    # rotate x-axis label ticks 45 degrees, increase size to 11
         plt.yticks(size = 13)    # increasee y-axis label ticks to size 13
         plt.xlabel('Sentiment Score')
         plt.ylabel('# of Occurrences')
         plt.grid(False)
-        plt.title(f'Distribution of {language.coding_language.min()} Sentiment', size = 13)    # title
+        plt.title(f'Distribution of {language.coding_language.min()} Sentiment', size = 13) 
     return plt.show();
-
 
 def unique_word_viz(train):
     '''
