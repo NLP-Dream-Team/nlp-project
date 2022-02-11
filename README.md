@@ -36,7 +36,14 @@ The goal of this project is to determine what language is primarily used in a re
 |0 |  repo                  | repo names that pops up while searching word zombie                                
 |1 |  language              | name of programming language used on repo                                
 |2 |  readme_contents       | text present on readme of the repo                       
-                
+|3 |  link                  | repo names that pops up while searching word zombie                                
+|4 |  cleaned_readme        | clean readme after doing basic clean                               
+|5 |  stemmed               | readme stemmed   
+|6 |  lemmatized            | readme lemmatized                               
+|4 |  message_length        | number of characters                               
+|5 |  word_count            | number of words   
+
+
 
 
 # Project Specifications
