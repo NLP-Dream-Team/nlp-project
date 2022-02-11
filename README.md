@@ -42,10 +42,9 @@ The goal of this project is to determine what language is primarily used in a re
 |4 |  cleaned_readme        | clean readme after doing basic clean                               
 |5 |  stemmed               | readme stemmed   
 |6 |  lemmatized            | readme lemmatized                               
-|4 |  message_length        | number of characters                               
-|5 |  word_count            | number of words   
-
-
+|7 |  message_length        | number of characters                               
+|8 |  word_count            | number of words   
+|9 |  TF-IDF                | Term Frequency / Inverse Document Frequency 
 
 
 # Project Specifications
