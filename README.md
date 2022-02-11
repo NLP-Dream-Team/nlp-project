@@ -5,6 +5,8 @@
 
 ###### Submitted To: Codeup Data Science Team
 
+![](zombie.png)
+
 # Project Summary
 In this project, we tried to explore the repositories in the GitHub by searching for word "zombie" under the search section of explore tab of the GitHub. We web scraped 230 repos with repo name, programming language and readme contents. We work through various stages of data science pipeline acquire, prepare, explore, and modelling to ensure that data we prepare fits on the model where we feed.
 
