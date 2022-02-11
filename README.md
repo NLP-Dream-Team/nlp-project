@@ -78,9 +78,9 @@ We explored on data to get answer to four initials questions, we asked.
 ### Model & Evaluate
 
 ###### Baseline
--Always predict JavaScript
--12% Accuracy on Train
--13% Accuracy on Validate
+- Always predict JavaScript
+- 12% Accuracy on Train
+- 13% Accuracy on Validate
 
 We used three models to evaluate the 
 ###### Logistic Regression
@@ -114,8 +114,3 @@ Based on the accuracy of train and validate, we can say that Random Forest and D
 
 # Next Steps:
 With more time we would like to train our models using more repositories with a greater variety of subjects.
-
-
-
-
-
