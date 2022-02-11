@@ -153,7 +153,7 @@ def get_idf_dist(train):
     dist_loop = word_counts.sort_values('all', ascending = False).head(20).index.to_list()
     return dist_loop
 
-# suggest add function to explore.py
+
 def distributions_grid(df, quant_vars):
 
     '''
@@ -170,9 +170,8 @@ def distributions_grid(df, quant_vars):
         df[cat].hist(color = 'teal', edgecolor = 'plum')   # display histogram for column
         plt.grid(False)    # rid grid-lines
         plt.tight_layout();    # clean
+     
 
-
-        
 def bar_messages(df):
     
     '''
@@ -180,7 +179,6 @@ def bar_messages(df):
     out of the average message lengths. It then plots a bar chart using pandas to show average message length
     for each language.
     '''
-    
     
     plt.rc('font', size = 15)    # set default text size
     plt.rc('figure', figsize = (13, 8))    # set default figure size
@@ -225,7 +223,7 @@ def bar_messages(df):
     plt.title('Average Message Length by Coding Language', size = 18)    # set title
     plt.xlabel('Character Count', size = 15)    # set x-axis label
     plt.ylabel('Language', size = 15);    # set y-axis label
-    
+
         
 def run_kruskal_wallis(train):
     '''
@@ -269,6 +267,7 @@ def run_kruskal_wallis(train):
     else:
         return 'Reject the null hypothesis.'
 
+
 def run_kruskal_wallis_sentiment(train):
     '''
     This function runs a Kruskal-Wallis statistical test to determine if there is
@@ -311,6 +310,7 @@ def run_kruskal_wallis_sentiment(train):
     else:
         return 'Reject the null hypothesis.'
 
+
 def sentiment_viz(train):
     '''
     This function returns a series of plots showing the distribution of sentiment scores by
@@ -341,6 +341,7 @@ def sentiment_viz(train):
         plt.grid(False)
         plt.title(f'Distribution of {language.coding_language.min()} Sentiment', size = 13)    # title
     return plt.show();
+
 
 def unique_word_viz(train):
     '''
@@ -408,22 +409,3 @@ def unique_word_viz(train):
     unique_words.drop(columns='all').sum().plot.bar().set(title='Number of Words Unique to Each Language\nFrom Each Language\'s Top 20 Words', xlabel='Language', ylabel='# of Words')
     plt.xticks(rotation=45)
     return plt.show();
-
-# suggest add function to explore.py
-def distributions_grid(df, quant_vars):
-
-    '''
-    This function creates a nice sized figure, enumerates the list of features passed into the function, creates a grid of subplots,
-    and then charts histograms for features in the list onto the subplots.
-    '''
-
-    plt.figure(figsize = (13, 8), edgecolor = 'darkslategrey')   # create figure
-    for i, cat in enumerate(quant_vars[:6]):    # loop through enumerated list
-        plot_number = i + 1     # i starts at 0, but plot nos should start at 1
-        plt.subplot(2, 3, plot_number)    # create subplot
-        plt.title(cat)    # title 
-        plt.ylabel('Count')    # set y-axis label
-        plt.xlabel('Inverse Document Frequency')    # set x-axis label
-        df[cat].hist(color = 'teal', edgecolor = 'plum')   # display histogram for column
-        plt.grid(False)    # rid grid-lines
-        plt.tight_layout();    # clean
